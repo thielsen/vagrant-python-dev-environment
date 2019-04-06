@@ -1,0 +1,39 @@
+- hosts: all
+  become: yes
+
+  tasks:
+    - name: Add key for repository
+      apt_key:
+        keyserver: keyserver.ubuntu.com
+        id: 4AB0F789CBA31744CC7DA76A8CF63AD3F06FC659
+        state: present
+  
+    - name: Add repository
+      apt_repository:
+        repo: deb http://ppa.launchpad.net/jonathonf/python-3.7/ubuntu xenial main
+        state: present
+
+    - name: Install Python 3.7
+      apt:
+        name: python3.7
+        state: present
+        update_cache: yes
+
+    - name: Install pip3
+      apt:
+        name: python3-pip
+        state: present
+        update_cache: yes
+  
+    - name: Install pipenv
+      pip:
+        name: pipenv
+        executable: pip3
+    
+    - name: Upgrade all packages
+      apt:
+        name: "*"
+        state: latest
+        update_cache: yes
+        force_apt_get: yes
+      become: true
